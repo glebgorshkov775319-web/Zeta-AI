@@ -1,0 +1,8 @@
+# Tested version set for a Kaggle GPU notebook; use a fresh notebook session.
+torch>=2.4.0
+transformers==4.51.3
+datasets==3.5.0
+peft==0.15.2
+trl==0.15.2
+accelerate==1.6.0
+bitsandbytes==0.45.5
