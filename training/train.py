@@ -1,6 +1,6 @@
 """
 Zeta AI QLoRA fine-tuning script.
-Designed for a Kaggle GPU notebook. It trains a LoRA adapter, not a new model from scratch.
+Designed for a cloud GPU notebook. It trains a LoRA adapter, not a new model from scratch.
 """
 import os
 from pathlib import Path
@@ -23,9 +23,7 @@ MAX_SEQ_LENGTH = int(os.environ.get("MAX_SEQ_LENGTH", "1024"))
 
 def main():
     if not torch.cuda.is_available():
-        raise RuntimeError(
-            "No GPU detected. In Kaggle, open Notebook settings and select an available GPU accelerator."
-        )
+        raise RuntimeError("No GPU detected. Enable a GPU accelerator in the notebook settings.")
 
     data_path = Path(DATA_FILE)
     if not data_path.exists():
@@ -105,11 +103,12 @@ def main():
         seed=42,
     )
 
+    # TRL 0.15.2 uses tokenizer=; processing_class= belongs to newer versions.
     trainer = SFTTrainer(
         model=model,
         args=args,
         train_dataset=dataset,
-        processing_class=tokenizer,
+        tokenizer=tokenizer,
         dataset_text_field="text",
         max_seq_length=MAX_SEQ_LENGTH,
         packing=False,
@@ -119,7 +118,7 @@ def main():
     trainer.model.save_pretrained(OUTPUT_DIR)
     tokenizer.save_pretrained(OUTPUT_DIR)
     print(f"Training finished. LoRA adapter and tokenizer saved to: {OUTPUT_DIR}")
-    print("This is an adapter, not a full standalone base model. Keep the base model license and weights in mind.")
+    print("This is an adapter, not a full standalone base model. The base model license still applies.")
 
 if __name__ == "__main__":
     main()
