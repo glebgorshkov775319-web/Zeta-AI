@@ -14,7 +14,7 @@ from transformers import (
     BitsAndBytesConfig,
     TrainingArguments,
 )
-from trl import SFTTrainer
+from trl import SFTConfig, SFTTrainer
 
 BASE_MODEL = os.environ.get("BASE_MODEL", "Qwen/Qwen3-4B")
 DATA_FILE = os.environ.get("DATA_FILE", "training/dataset.jsonl")
@@ -85,7 +85,7 @@ def main():
     model = get_peft_model(model, lora_config)
     model.print_trainable_parameters()
 
-    args = TrainingArguments(
+    args = SFTConfig(
         output_dir=OUTPUT_DIR,
         num_train_epochs=3,
         per_device_train_batch_size=1,
@@ -101,17 +101,17 @@ def main():
         report_to="none",
         remove_unused_columns=False,
         seed=42,
+        dataset_text_field="text",
+        max_seq_length=MAX_SEQ_LENGTH,
+        packing=False,
     )
 
-    # TRL 0.15.2 uses tokenizer=; processing_class= belongs to newer versions.
+    # TRL 0.15.2 stores dataset_text_field/max_seq_length/packing in SFTConfig.
     trainer = SFTTrainer(
         model=model,
         args=args,
         train_dataset=dataset,
         tokenizer=tokenizer,
-        dataset_text_field="text",
-        max_seq_length=MAX_SEQ_LENGTH,
-        packing=False,
     )
 
     trainer.train()
