@@ -1,8 +1,9 @@
-# Tested version set for a Kaggle GPU notebook; use a fresh notebook session.
+# Cloud GPU notebook dependencies for Qwen3-4B QLoRA fine-tuning.
+# Keep the TRL version aligned with training/train.py's SFTTrainer API.
 torch>=2.4.0
 transformers==4.51.3
 datasets==3.5.0
 peft==0.15.2
 trl==0.15.2
 accelerate==1.6.0
-bitsandbytes==0.45.5
+bitsandbytes>=0.46.0
