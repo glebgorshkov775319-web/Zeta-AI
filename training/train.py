@@ -99,7 +99,7 @@ def main():
         gradient_checkpointing=True,
         optim="paged_adamw_8bit",
         report_to="none",
-        remove_unused_columns=False,
+        remove_unused_columns=True,
         seed=42,
         dataset_text_field="text",
         max_seq_length=MAX_SEQ_LENGTH,
